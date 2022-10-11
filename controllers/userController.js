@@ -1,6 +1,6 @@
 const User = require('../models/User');
 
-const userController = {
+module.exports = {
   findAllUsers(req, res) {
     User.find()
       .then((dbUserData) => res.json(users))
@@ -39,4 +39,31 @@ const userController = {
         res.status(500).json(err);
       });
   },
+  addFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $addToSet: { friends: req.friendId } },
+      { runValidators: true, new: true }
+    )
+      .then((dbUserData) =>
+        !dbUserData
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : res.json(dbUserData)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
+  deleteFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $pull: { friends: req.friendId } },
+      { runValidators: true, new: true }
+    )
+      .then((dbUserData) =>
+        !dbUserData
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : res.json(dbUserData)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
 }
+
