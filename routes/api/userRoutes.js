@@ -10,7 +10,7 @@ const {
 } = require('../../controllers/userController.js');
 
 
-router.route('/').get(finaAllUsers).post(createUser);
+router.route('/').get(findAllUsers).post(createUser);
 
 
 router.route('/:userId').get(findUserById).put(updateUser).delete(deleteUser);

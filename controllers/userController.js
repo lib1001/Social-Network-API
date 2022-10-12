@@ -39,26 +39,26 @@ module.exports = {
         res.status(500).json(err);
       });
   },
-  // deleteUser(req, res) {
-  //   User.findOneAndRemove({ _id: req.params.userId })
-  //     .then((dbUserData) =>
-  //       !dbUserData
-  //         ? res.status(404).json({ message: 'No user with this id!' })
-  //         : User.findOneAndUpdate(
-  //             { users: req.params.userId },
-  //             { $pull: { users: req.params.userId } },
-  //             { new: true }
-  //           )
-  //     )
-  //     .then((dbUserData) =>
-  //       !dbUserData
-  //         ? res
-  //             .status(404)
-  //             .json({ message: 'No user with this id!' })
-  //         : res.json({ message: 'User successfully deleted!' })
-  //     )
-  //     .catch((err) => res.status(500).json(err));
-  // },
+  deleteUser(req, res) {
+    User.findOneAndRemove({ _id: req.params.userId })
+      .then((dbUserData) =>
+        !dbUserData
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : User.findOneAndUpdate(
+              { users: req.params.userId },
+              { $pull: { users: req.params.userId } },
+              { new: true }
+            )
+      )
+      .then((dbUserData) =>
+        !dbUserData
+          ? res
+              .status(404)
+              .json({ message: 'No user with this id!' })
+          : res.json({ message: 'User successfully deleted!' })
+      )
+      .catch((err) => res.status(500).json(err));
+  },
   addFriend(req, res) {
     User.findOneAndUpdate(
       { _id: req.params.userId },
