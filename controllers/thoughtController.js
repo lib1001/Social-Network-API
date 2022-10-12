@@ -1,10 +1,16 @@
-const Thought = require('../models/Thought');
+const { User, Thought } = require('../models');
 
-module.exports = {
+const thoughtController = {
     getAllThoughts(req, res) {
-        Thought.find()
+        Thought.find({})
+        .populate({
+          path: 'reactions',
+          select: '-__v'
+        })
+        .select('-__v')
           .then((dbThoughtData) => res.json(dbThoughtData))
-          .catch((err) => res.status(500).json(err));
+          .catch((err) => { console.log(err);
+            res.status(500).json(err)});
       },
       findThoughtById(req, res) {
         Thought.findOne({ _id: req.params.thoughtId })
@@ -46,7 +52,7 @@ module.exports = {
           .then((dbThoughtData) =>
             !dbThoughtData
               ? res.status(404).json({ message: 'No thought with this id!' })
-              : res.json(video)
+              : res.json(dbThoughtData)
           )
           .catch((err) => {
             console.log(err);
@@ -68,7 +74,7 @@ module.exports = {
             !dbUserData
               ? res
                   .status(404)
-                  .json({ message: 'Thought created but no user with this id!' })
+                  .json({ message: 'Thought successfully deleted!' })
               : res.json({ message: 'Thought successfully deleted!' })
           )
           .catch((err) => res.status(500).json(err));
@@ -91,7 +97,7 @@ module.exports = {
       removeReaction(req, res) {
         Thought.findOneAndUpdate(
           { _id: req.params.thoughtId },
-          { $pull: { reactions: { responseId: req.params.reactionId } } },
+          { $pull: { reactions: { reactionId: req.params.reactionId } } },
           { runValidators: true, new: true }
         )
           .then((dbThoughtData) =>
@@ -105,3 +111,5 @@ module.exports = {
 
       
     }
+
+    module.exports = thoughtController
